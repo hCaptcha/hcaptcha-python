@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=77.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hcaptcha-python"
+version = "1.0.0"
+description = "A simple Python client to validate hCaptcha tokens."
+authors = [
+    { name = "Federico Cardozo", email = "federico.cardozo@intuitionmachines.com" }
+]
+maintainers = [
+    { name = "Federico Cardozo", email = "federico.cardozo@intuitionmachines.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.24.0",
+]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["hcaptcha", "captcha", "siteverify", "security"]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Framework :: Async Support",
+    "Topic :: Security",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/hCaptcha/hcaptcha-python"
+Repository = "https://github.com/hCaptcha/hcaptcha-python"
+
+[project.optional-dependencies]
+test = [
+    "build>=1.2",
+    "mypy>=1.14",
+    "pytest>=7",
+    "pytest-asyncio>=0.21",
+    "ruff>=0.9",
+    "respx>=0.20",
+    "twine>=6",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

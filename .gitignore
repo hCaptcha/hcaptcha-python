@@ -1,0 +1,90 @@
+# Python bytecode and native extensions
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution and packaging artifacts
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments and Python version managers
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+__pypackages__/
+
+# Test, coverage, and benchmark output
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+*.py,cover
+htmlcov/
+.hypothesis/
+.tox/
+.nox/
+.benchmarks/
+
+# Type checkers, linters, and other Python tools
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
+.pybuilder/
+.pyre_configuration.local
+cython_debug/
+pip-wheel-metadata/
+
+# Documentation and notebook output
+docs/_build/
+site/
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+*.pem
+*.key
+
+# Logs and local runtime files
+*.log
+*.pid
+*.pid.lock
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
