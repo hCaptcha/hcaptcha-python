@@ -2,7 +2,6 @@ import ipaddress
 import json
 import math
 
-
 DEFAULT_API_BASE_URL = "https://api.hcaptcha.com"
 _RESERVED_REQUEST_FIELDS = frozenset({"secret", "sitekey", "response"})
 
@@ -10,7 +9,14 @@ _RESERVED_REQUEST_FIELDS = frozenset({"secret", "sitekey", "response"})
 class _BaseClient:
     """Internal base class for hCaptcha clients."""
 
-    def __init__(self, sitekey: str, secret: str, *, api_base_url: str | None = None, threshold: float | None = None):
+    def __init__(
+        self,
+        sitekey: str,
+        secret: str,
+        *,
+        api_base_url: str | None = None,
+        threshold: float | None = None,
+    ):
         self.sitekey = self._validate_required_text("sitekey", sitekey)
         self.secret = self._validate_required_text("secret", secret)
         base_url = (api_base_url or DEFAULT_API_BASE_URL).rstrip("/")
@@ -43,9 +49,7 @@ class _BaseClient:
             data[name] = value
 
         if response_token is not None:
-            data["response"] = self._validate_required_text(
-                "response", response_token
-            )
+            data["response"] = self._validate_required_text("response", response_token)
 
         return data
 
@@ -105,6 +109,8 @@ class _BaseClient:
     def _serialize_client_tags(value: object) -> str:
         if isinstance(value, str):
             return value
-        if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+        if not isinstance(value, list) or not all(
+            isinstance(item, str) for item in value
+        ):
             raise TypeError("client_tags must be a string or list of strings")
         return json.dumps(value, separators=(",", ":"))

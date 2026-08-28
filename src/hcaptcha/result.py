@@ -25,8 +25,10 @@ class VerificationResult:
     raw: dict = field(default_factory=dict)
 
     @classmethod
-    def from_response(cls, payload: dict, threshold: float | None) -> "VerificationResult":
-        success = bool(payload.get("success", False))
+    def from_response(
+        cls, payload: dict, threshold: float | None
+    ) -> "VerificationResult":
+        success = bool(payload.get("success"))
         score = payload.get("score")
         passed = success and not (
             score is not None and threshold is not None and score > threshold

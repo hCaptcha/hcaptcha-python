@@ -1,4 +1,7 @@
+from json import JSONDecodeError
+
 import httpx
+
 from ._base import _BaseClient
 from .result import VerificationResult
 
@@ -6,8 +9,18 @@ from .result import VerificationResult
 class HCaptchaAsyncClient(_BaseClient):
     """An asynchronous client for validating hCaptcha tokens."""
 
-    def __init__(self, sitekey: str, secret: str, *, session: httpx.AsyncClient | None = None, api_base_url: str | None = None, threshold: float | None = None):
-        super().__init__(sitekey, secret, api_base_url=api_base_url, threshold=threshold)
+    def __init__(
+        self,
+        sitekey: str,
+        secret: str,
+        *,
+        session: httpx.AsyncClient | None = None,
+        api_base_url: str | None = None,
+        threshold: float | None = None,
+    ):
+        super().__init__(
+            sitekey, secret, api_base_url=api_base_url, threshold=threshold
+        )
         if session is not None and not isinstance(session, httpx.AsyncClient):
             raise TypeError("session must be an httpx.AsyncClient")
         self._session = session or httpx.AsyncClient()
@@ -43,5 +56,5 @@ class HCaptchaAsyncClient(_BaseClient):
             res = await self._session.post(url, data=data)
             res.raise_for_status()
             return VerificationResult.from_response(res.json(), self.threshold)
-        except Exception as exc:
+        except (httpx.HTTPError, JSONDecodeError) as exc:
             return VerificationResult.from_error(exc)

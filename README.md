@@ -55,6 +55,7 @@ Install the test tools and run all local checks:
 ```bash
 pip install -e ".[test]"
 ruff check .
+ruff format --check .
 mypy src
 pytest -q --disable-warnings
 python -m build
@@ -79,13 +80,13 @@ For package support, read [SUPPORT.md](SUPPORT.md).
 
 Both client constructors accept these parameters:
 
-| Parameter      | Type | Default | Description |
-|----------------|------|---------|-------------|
-| `sitekey` | `str` | — | Required hCaptcha site key. |
-| `secret` | `str` | — | Required hCaptcha secret key. Keep it on the server. |
+| Parameter      | Type | Default | Description                                                                                                                                                                                        |
+|----------------|------|---------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `sitekey` | `str` | — | Required hCaptcha site key.                                                                                                                                                                        |
+| `secret` | `str` | — | Required hCaptcha secret key. Keep it on the server.                                                                                                                                               |
 | `session` | `httpx.Client` or `httpx.AsyncClient` | `None` | A caller-owned HTTP client. Use it to configure connection pooling, transport, and timeouts. The synchronous client requires `httpx.Client`. The asynchronous client requires `httpx.AsyncClient`. |
-| `api_base_url` | `str \| None` | `None` | The API base URL. `None` uses `https://api.hcaptcha.com`. |
-| `threshold` | Number from `0` to `1`, or `None` | `None` | Optional local risk cutoff. When hCaptcha returns a score greater than this value, `passed` is `False` while `success` keeps the API value. A score equal to the threshold passes. |
+| `api_base_url` | `str \| None` | `None` | The API base URL. `None` uses `https://api.hcaptcha.com`.                                                                                                                                          |
+| `threshold` | Number from `0` to `1`, or `None` | `None` | Optional local Enterprise risk cutoff. See enterprise docs. |
 
 The client does not close a session that you provide. Close it in your
 application lifecycle.
@@ -153,11 +154,11 @@ else:
 |---|---|---|
 | `success` | `bool` | The API `success` field. True when the token is valid and not expired. |
 | `passed` | `bool` | The client decision. It is `False` when verification fails or the score is greater than `threshold`. |
-| `score` | `float \| None` | The optional API risk score. |
-| `score_reason` | `list \| None` | The optional API score reasons. |
-| `ekey` | `str \| None` | The optional API ephemeral session identifier. |
+| `score` | `float \| None` | See enterprise docs. |
+| `score_reason` | `list \| None` | See enterprise docs. |
+| `ekey` | `str \| None` | See enterprise docs. |
 | `error_codes` | `list \| None` | The API `error-codes` field. |
-| `sitekey` | `str \| None` | The optional API sitekey field. |
+| `sitekey` | `str \| None` | See enterprise docs. |
 | `hostname` | `str \| None` | The optional API hostname field. Do not use it for authentication. |
 | `challenge_ts` | `str \| None` | The optional API challenge timestamp. |
 | `error` | `str \| None` | Set when the HTTP call failed before a usable response. |
@@ -200,6 +201,8 @@ import httpx
 from hcaptcha.client import HCaptchaClient
 
 with httpx.Client() as session:
-    client = HCaptchaClient(sitekey="your-sitekey", secret="your-secret", session=session)
+    client = HCaptchaClient(
+        sitekey="your-sitekey", secret="your-secret", session=session
+    )
     result = client.verify("user-response-token")
 ```

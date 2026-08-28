@@ -42,10 +42,37 @@ test = [
     "mypy>=1.14",
     "pytest>=7",
     "pytest-asyncio>=0.21",
-    "ruff>=0.9",
+    "ruff==0.16.5",
     "respx>=0.20",
     "twine>=6",
 ]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+extend-exclude = [".venv"]
+preview = true
+
+[tool.ruff.lint]
+select = [
+    "ASYNC",
+    "B",
+    "BLE",
+    "C4",
+    "E",
+    "F",
+    "I",
+    "PIE",
+    "PT",
+    "RET",
+    "RUF",
+    "S",
+    "SIM",
+    "UP",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["assert", "hardcoded-password-string"]

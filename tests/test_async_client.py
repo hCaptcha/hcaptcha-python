@@ -1,12 +1,15 @@
+from urllib.parse import parse_qs
+
 import httpx
 import pytest
 import respx
-from urllib.parse import parse_qs
 from httpx import Response
+
 from hcaptcha.aclient import HCaptchaAsyncClient
 
 SITEKEY = "test-sitekey"
 SECRET = "test-secret"
+
 
 def _mock_verify(payload):
     return respx.post("https://api.hcaptcha.com/siteverify").mock(
@@ -19,6 +22,7 @@ def _mock_nojs(payload):
         return_value=Response(200, json=payload)
     )
 
+
 @pytest.mark.asyncio
 async def test_async_verify_success():
     client = HCaptchaAsyncClient(sitekey=SITEKEY, secret=SECRET)
@@ -28,6 +32,7 @@ async def test_async_verify_success():
     assert result.success is True
     assert result.passed is True
 
+
 @pytest.mark.asyncio
 async def test_async_threshold_blocks_high_score():
     client = HCaptchaAsyncClient(sitekey=SITEKEY, secret=SECRET, threshold=0.5)
@@ -36,6 +41,7 @@ async def test_async_threshold_blocks_high_score():
         result = await client.verify("token")
     assert result.success is True
     assert result.passed is False
+
 
 @pytest.mark.asyncio
 async def test_async_inject_session():
@@ -48,11 +54,26 @@ async def test_async_inject_session():
         assert result.passed is True
 
 
+def test_async_client_rejects_sync_session():
+    with (
+        httpx.Client() as session,
+        pytest.raises(TypeError, match=r"httpx\.AsyncClient"),
+    ):
+        HCaptchaAsyncClient(sitekey=SITEKEY, secret=SECRET, session=session)
+
+
 @pytest.mark.asyncio
-async def test_async_client_rejects_sync_session():
-    with httpx.Client() as session:
-        with pytest.raises(TypeError, match="httpx.AsyncClient"):
-            HCaptchaAsyncClient(sitekey=SITEKEY, secret=SECRET, session=session)
+async def test_async_invalid_json_is_reported():
+    # A malformed API response must return an operational error, not raise.
+    client = HCaptchaAsyncClient(sitekey=SITEKEY, secret=SECRET)
+    with respx.mock:
+        respx.post("https://api.hcaptcha.com/siteverify").mock(
+            return_value=Response(200, content=b"not-json")
+        )
+        result = await client.verify("token")
+    assert result.success is False
+    assert result.passed is False
+    assert result.error is not None
 
 
 @pytest.mark.asyncio
